@@ -15,8 +15,14 @@ const Login = () => {
     e.preventDefault();
     try {
       const res = await api.post("/auth/login", form);
+
+      // Save token and user info
       localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+
       setMessage("Login successful");
+      console.log("Token:", res.data.token);
+      console.log("User info:", res.data.user);
     } catch (err) {
       setMessage(err.response?.data?.message || "Login failed");
     }
@@ -24,14 +30,25 @@ const Login = () => {
 
   // GOOGLE LOGIN
   const handleGoogleSuccess = async (credentialResponse) => {
+    if (!credentialResponse?.credential) {
+      setMessage("Google login failed: missing credential");
+      return;
+    }
+
     try {
       const res = await api.post("/auth/google", {
         token: credentialResponse.credential,
       });
-
+   
+      // Save token and user info
       localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+
       setMessage("Google login successful");
+      console.log("Token:", res.data.token);
+      console.log("User info:", res.data.user);
     } catch (error) {
+      console.error(error);
       setMessage("Google login failed");
     }
   };

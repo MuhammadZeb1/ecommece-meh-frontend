@@ -1,12 +1,22 @@
-import React from "react";
+import { ConfirmDialog } from "../common/ConfirmDialog";
+import { Button } from "./ui/button";
+
+import { FaTrash, FaEdit } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { deleteProduct } from "../redux/products/productsSlice";
 import { useNavigate } from "react-router-dom";
-import { FaTrash, FaEdit } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 const ProductCard = ({ product }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const handleDelete = () => {
+    dispatch(deleteProduct(product._id));
+    toast.success("Product deleted successfully ✅", {
+      position: "bottom-right",
+    });
+  };
 
   const handleUpdate = () => {
     navigate(`/updateProduct/${product._id}`);
@@ -22,8 +32,6 @@ const ProductCard = ({ product }) => {
           alt={product.name}
           className="h-52 w-full object-cover transition-transform duration-300 hover:scale-110"
         />
-
-        {/* PRICE BADGE */}
         <span className="badge badge-primary absolute top-3 right-3 text-lg px-3 py-3">
           ${product.price}
         </span>
@@ -32,18 +40,14 @@ const ProductCard = ({ product }) => {
       {/* BODY */}
       <div className="card-body flex flex-col justify-between">
         <div>
-          <h2 className="card-title text-xl font-bold">
-            {product.name}
-          </h2>
+          <h2 className="card-title text-xl font-bold">{product.name}</h2>
 
           {/* CATEGORY */}
           {product.category && (
             <div className="mt-2">
               <span className="badge badge-outline badge-sm">
                 {product.category.name}
-                {product.category.subCategory
-                  ? ` / ${product.category.subCategory}`
-                  : ""}
+                {product.category.subCategory ? ` / ${product.category.subCategory}` : ""}
               </span>
             </div>
           )}
@@ -58,19 +62,29 @@ const ProductCard = ({ product }) => {
 
         {/* ACTIONS */}
         <div className="card-actions justify-end mt-4 gap-2">
-          <button
-            onClick={() => dispatch(deleteProduct(product._id))}
-            className="btn btn-error btn-outline btn-sm flex items-center gap-1"
-          >
-            <FaTrash /> Delete
-          </button>
+          
+          {/* COMMON CONFIRM DIALOG */}
+          <ConfirmDialog
+            trigger={
+              <Button variant="destructive" size="sm" className="flex items-center gap-1">
+                <FaTrash /> Delete
+              </Button>
+            }
+            title="Delete Product?"
+            description="This will permanently delete this product."
+            onConfirm={handleDelete}
+            confirmText="Delete"
+            cancelText="Cancel"
+          />
 
-          <button
+          {/* UPDATE */}
+          <Button
+            size="sm"
             onClick={handleUpdate}
-            className="btn btn-primary btn-sm flex items-center gap-1"
+            className="flex items-center gap-1"
           >
             <FaEdit /> Update
-          </button>
+          </Button>
         </div>
       </div>
     </div>

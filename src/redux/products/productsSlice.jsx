@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import api from "../services/api";
+import api from "../../services/api";
 
 // Async thunk to get all products
 export const fetchProducts = createAsyncThunk(
@@ -27,14 +27,17 @@ const productsSlice = createSlice({
       .addCase(fetchProducts.pending, (state) => {
         state.loading = true;
         state.error = null;
+        console.log("first")
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
         state.loading = false;
         state.items = action.payload;
+        console.log("second")
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+        console.log("third")
       });
   },
 });

@@ -6,6 +6,8 @@ import Dashboard from "./pages/Dashboard"
 import CreateProduct from "./pages/CreateProduct"
 import UpdateProducts from "./pages/UpdateProducts"
 import Navbar from "./components/Navbar"
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 
 
@@ -16,6 +18,16 @@ function App() {
 
   return (
    <>
+   <ToastContainer
+  position="top-left"
+  autoClose={3000}
+  hideProgressBar={false}
+  newestOnTop={false}
+  closeOnClick
+  pauseOnHover
+/>
+    {/* your routes */}
+      <ToastContainer position="top-right" autoClose={3000} />
    <Navbar/>
      <Routes>
       {/* Your route components go here */}

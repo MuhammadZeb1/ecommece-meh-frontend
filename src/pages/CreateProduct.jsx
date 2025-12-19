@@ -12,15 +12,48 @@ const CreateProduct = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-3 max-w-md mx-auto">
-      <input name="name" placeholder="Name" className="input input-bordered w-full" />
-      <input name="price" placeholder="Price" className="input input-bordered w-full" />
-      <input name="categoryName" placeholder="Category" className="input input-bordered w-full" />
-      <input name="subCategory" placeholder="Sub Category" className="input input-bordered w-full" />
-      <textarea name="description" className="textarea textarea-bordered w-full" />
-      <input type="file" name="image" className="file-input w-full" />
-      <button className="btn btn-primary w-full">Create Product</button>
-    </form>
+    <div className="flex items-center justify-center min-h-screen bg-base-200">
+      <div className="card w-full max-w-md bg-base-100 shadow-xl">
+        <div className="card-body">
+          <h2 className="card-title justify-center">Create Product</h2>
+
+          <form onSubmit={handleSubmit} className="space-y-3">
+            <input
+              name="name"
+              placeholder="Name"
+              className="input input-bordered w-full"
+            />
+            <input
+              name="price"
+              placeholder="Price"
+              className="input input-bordered w-full"
+            />
+            <input
+              name="categoryName"
+              placeholder="Category"
+              className="input input-bordered w-full"
+            />
+            <input
+              name="subCategory"
+              placeholder="Sub Category"
+              className="input input-bordered w-full"
+            />
+            <textarea
+              name="description"
+              className="textarea textarea-bordered w-full"
+            />
+            <input
+              type="file"
+              name="image"
+              className="file-input w-full"
+            />
+            <button className="btn btn-primary w-full">
+              Create Product
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
   );
 };
 

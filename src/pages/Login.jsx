@@ -1,10 +1,16 @@
 import { useState } from "react";
 import api from "../services/api";
 import { GoogleLogin } from "@react-oauth/google";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const [form, setForm] = useState({ email: "", password: "" });
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+  });
   const [message, setMessage] = useState("");
+  const navigate = useNavigate()
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -15,40 +21,25 @@ const Login = () => {
     e.preventDefault();
     try {
       const res = await api.post("/auth/login", form);
-
-      // Save token and user info
       localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
-
       setMessage("Login successful");
-      console.log("Token:", res.data.token);
-      console.log("User info:", res.data.user);
+      toast.success("Login successful");
+      navigate("/dashboard");
     } catch (err) {
-      setMessage(err.response?.data?.message || "Login failed");
+      toast.error(err.response?.data?.message || "Login failed");
     }
   };
 
   // GOOGLE LOGIN
   const handleGoogleSuccess = async (credentialResponse) => {
-    if (!credentialResponse?.credential) {
-      setMessage("Google login failed: missing credential");
-      return;
-    }
-
     try {
       const res = await api.post("/auth/google", {
         token: credentialResponse.credential,
       });
-   
-      // Save token and user info
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
 
+      localStorage.setItem("token", res.data.token);
       setMessage("Google login successful");
-      console.log("Token:", res.data.token);
-      console.log("User info:", res.data.user);
     } catch (error) {
-      console.error(error);
       setMessage("Google login failed");
     }
   };

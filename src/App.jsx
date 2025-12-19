@@ -5,6 +5,7 @@ import Login from "./pages/Login"
 import Dashboard from "./pages/Dashboard"
 import CreateProduct from "./pages/CreateProduct"
 import UpdateProducts from "./pages/UpdateProducts"
+import Navbar from "./components/Navbar"
 
 
 
@@ -15,6 +16,7 @@ function App() {
 
   return (
    <>
+   <Navbar/>
      <Routes>
       {/* Your route components go here */}
       <Route path="/" element={<Home/>} />

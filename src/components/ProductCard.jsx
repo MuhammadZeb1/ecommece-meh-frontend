@@ -1,8 +1,14 @@
 import { useDispatch } from "react-redux";
-import { deleteProduct } from "../redux/products/productsSlice";
+import { deleteProduct, updateProduct } from "../redux/products/productsSlice";
+import { useNavigate } from "react-router-dom";
 
 const ProductCard = ({ product }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleUpdate = () => {
+    navigate(`/updateProduct/${product._id}`);
+  };
 
   return (
     <div className="card bg-base-100 shadow-xl">
@@ -20,6 +26,14 @@ const ProductCard = ({ product }) => {
             onClick={() => dispatch(deleteProduct(product._id))}
           >
             Delete
+          </button>
+        </div>
+        <div className="card-actions justify-end">
+          <button
+            className="btn btn-error btn-sm"
+            onClick={handleUpdate}
+          >
+            Update
           </button>
         </div>
       </div>

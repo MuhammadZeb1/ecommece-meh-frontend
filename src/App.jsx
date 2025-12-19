@@ -4,6 +4,7 @@ import Signup from "./pages/Signup"
 import Login from "./pages/Login"
 import Dashboard from "./pages/Dashboard"
 import CreateProduct from "./pages/CreateProduct"
+import UpdateProducts from "./pages/UpdateProducts"
 
 
 
@@ -21,6 +22,7 @@ function App() {
       <Route path="/login" element={<Login/>} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/createProduct" element={<CreateProduct />} />
+      <Route path="/updateProduct/:id" element={<UpdateProducts />} />
      </Routes>
    </>
   )

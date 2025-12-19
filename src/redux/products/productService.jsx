@@ -24,7 +24,7 @@ export const deleteProductAPI = async (id) => {
 
 // UPDATE
 export const updateProductAPI = async ({ id, formData }) => {
-  const res = await api.put(`/products/${id}`, formData, {
+  const res = await api.put(`/products/update/${id}`, formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
   return res.data;

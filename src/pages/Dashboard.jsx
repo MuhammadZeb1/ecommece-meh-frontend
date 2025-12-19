@@ -10,7 +10,9 @@ const Products = () => {
   useEffect(() => {
     dispatch(fetchProducts());
   }, [dispatch]);
-
+  if (items.length === 0 && !loading) {
+    return <p className="text-center">No products available.</p>;
+  }
   if (loading) return <p className="text-center">Loading...</p>;
 
   return (

@@ -16,7 +16,9 @@ export const createProductAPI = async (formData) => {
 
 // DELETE  ✅ FIXED
 export const deleteProductAPI = async (id) => {
-  const res = await api.delete(`/products/${id}`);
+  console.log("khan",id)
+  const res = await api.delete(`/products/delete/${id}`);
+  console.log(id)
   return res.data;
 };
 

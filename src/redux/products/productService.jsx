@@ -1,22 +1,29 @@
 import api from "../../services/api";
 
-// Get all products
-export const getProducts = async () => {
+// READ
+export const getProductsAPI = async () => {
   const res = await api.get("/products");
   return res.data;
 };
 
-// Get single product
-export const getProductById = async (id) => {
-  const res = await api.get(`/products/${id}`);
-  return res.data;
-};
-
-// Create product
-export const createProduct = async (formData) => {
+// CREATE
+export const createProductAPI = async (formData) => {
   const res = await api.post("/products/create", formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
   return res.data;
 };
 
+// DELETE  ✅ FIXED
+export const deleteProductAPI = async (id) => {
+  const res = await api.delete(`/products/${id}`);
+  return res.data;
+};
+
+// UPDATE
+export const updateProductAPI = async ({ id, formData }) => {
+  const res = await api.put(`/products/${id}`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return res.data;
+};

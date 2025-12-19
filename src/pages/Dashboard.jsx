@@ -5,17 +5,18 @@ import ProductCard from "../components/ProductCard";
 
 const Products = () => {
   const dispatch = useDispatch();
-  const { products, isLoading } = useSelector((state) => state.products);
+  const { items, isLoading } = useSelector((state) => state.products);
+  console.log("products", items);
 
   useEffect(() => {
     dispatch(fetchProducts());
   }, [dispatch]);
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <p>{alert("khan")}</p>;
 
   return (
-    <div className="grid grid-cols-3 gap-4">
-      {products.map((p) => (
+    <div className="grid grid-cols-3 gap-4 container max-auto mt-4">
+      {items.map((p) => (
         <ProductCard key={p._id} product={p} />
       ))}
     </div>

@@ -8,6 +8,10 @@ import UpdateProducts from "./pages/UpdateProducts"
 import Navbar from "./components/Navbar"
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import MenProducts from "./pages/MenProducts"
+import WomenProducts from "./pages/WomenProducts"
+import KidProduct from "./pages/KidProduct"
+import CategoryPage from "./pages/CategoryPage"
 
 
 
@@ -37,6 +41,11 @@ function App() {
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/createProduct" element={<CreateProduct />} />
       <Route path="/updateProduct/:id" element={<UpdateProducts />} />
+      {/* <Route path="/menProducts" element={<MenProducts />} />
+      <Route path="/womenProducts" element={<WomenProducts />} />
+      <Route path="/kidProduct" element={<KidProduct />} /> */}
+      <Route path="/dashboard/category/:category" element={<CategoryPage />} />
+
      </Routes>
    </>
   )

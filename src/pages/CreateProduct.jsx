@@ -21,26 +21,26 @@ const CreateProduct = () => {
             <input
               name="name"
               placeholder="Name"
-              className="input input-bordered w-full"
+              className="input border border-black w-full"
             />
             <input
               name="price"
               placeholder="Price"
-              className="input input-bordered w-full"
+              className="input border border-black w-full"
             />
             <input
               name="categoryName"
               placeholder="Category"
-              className="input input-bordered w-full"
+              className="input border border-black w-full"
             />
             <input
               name="subCategory"
               placeholder="Sub Category"
-              className="input input-bordered w-full"
+              className="input border border-black w-full"
             />
             <textarea
               name="description"
-              className="textarea textarea-bordered w-full"
+              className="textarea border border-black w-full"
             />
             <input
               type="file"

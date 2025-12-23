@@ -26,11 +26,11 @@ const UpdateProductPage = () => {
     <div className="card-body">
       <h2 className="card-title text-center">Update Product</h2>
       <form onSubmit={handleSubmit} className="space-y-3">
-        <input name="name" defaultValue={product.name} placeholder="Name" className="input input-bordered w-full" />
-        <input name="price" defaultValue={product.price} placeholder="Price" className="input input-bordered w-full" />
-        <input name="categoryName" defaultValue={product.category.name} placeholder="Category" className="input input-bordered w-full" />
-        <input name="subCategory" defaultValue={product.category.subCategory} placeholder="Sub Category" className="input input-bordered w-full" />
-        <textarea name="description" defaultValue={product.description} className="textarea textarea-bordered w-full" />
+        <input name="name" defaultValue={product.name} placeholder="Name" className="input border border-black w-full" />
+        <input name="price" defaultValue={product.price} placeholder="Price" className="input border border-black w-full" />
+        <input name="categoryName" defaultValue={product.category.name} placeholder="Category" className="input border border-black w-full" />
+        <input name="subCategory" defaultValue={product.category.subCategory} placeholder="Sub Category" className="input border border-black w-full" />
+        <textarea name="description" defaultValue={product.description} className="textarea border border-black w-full" />
         <input type="file" name="image" className="file-input w-full" />
         <button className="btn btn-primary w-full">Update Product</button>
       </form>

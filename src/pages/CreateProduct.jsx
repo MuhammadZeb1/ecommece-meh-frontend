@@ -1,60 +1,40 @@
-import { useDispatch } from "react-redux";
-import { addProduct } from "../redux/products/productsSlice";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProducts } from "../redux/products/productsSlice";
+import ProductCard from "../components/ProductCard";
 
-const CreateProduct = () => {
+const CategoryPage = () => {
   const dispatch = useDispatch();
+  const { items, loading } = useSelector((state) => state.products);
+  const [products, setProducts] = useState([]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    dispatch(addProduct(formData));
-    e.target.reset();
-  };
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, [dispatch]);
+
+  useEffect(() => {
+    setProducts(items);
+  }, [items]);
+
+  if (loading) {
+    return <p className="text-center mt-10">Loading products...</p>;
+  }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-base-200">
-      <div className="card w-full max-w-md bg-base-100 shadow-xl">
-        <div className="card-body">
-          <h2 className="card-title justify-center">Create Product</h2>
+    <div className="min-h-screen w-full bg-gray-50 p-4">
+      <h1 className="text-2xl font-bold mb-6">Category: Men</h1>
 
-          <form onSubmit={handleSubmit} className="space-y-3">
-            <input
-              name="name"
-              placeholder="Name"
-              className="input border border-black w-full"
-            />
-            <input
-              name="price"
-              placeholder="Price"
-              className="input border border-black w-full"
-            />
-            <input
-              name="categoryName"
-              placeholder="Category"
-              className="input border border-black w-full"
-            />
-            <input
-              name="subCategory"
-              placeholder="Sub Category"
-              className="input border border-black w-full"
-            />
-            <textarea
-              name="description"
-              className="textarea border border-black w-full"
-            />
-            <input
-              type="file"
-              name="image"
-              className="file-input w-full"
-            />
-            <button className="btn btn-primary w-full">
-              Create Product
-            </button>
-          </form>
+      {products.length === 0 ? (
+        <p className="text-center mt-10">No products found.</p>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {products.map((product) => (
+            <ProductCard key={product._id} product={product} />
+          ))}
         </div>
-      </div>
+      )}
     </div>
   );
 };
 
-export default CreateProduct;
+export default CategoryPage;

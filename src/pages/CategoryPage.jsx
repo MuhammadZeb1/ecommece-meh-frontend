@@ -8,6 +8,10 @@ const CategoryPage = () => {
   const dispatch = useDispatch();
   const { items, loading } = useSelector((state) => state.products);
   const [products, setProducts] = useState([]);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
   // Get category from URL
   const { category } = useParams();
@@ -38,6 +42,7 @@ const CategoryPage = () => {
       <h1 className="text-2xl font-bold mb-6">
         {category ? `${category} Products` : "All Products"}
       </h1>
+      <button></button>
 
       {products.length === 0 ? (
         <p className="text-center mt-4">No products found.</p>

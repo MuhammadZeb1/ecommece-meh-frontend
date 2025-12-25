@@ -13,22 +13,33 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useMemo, useState } from "react";
 
 const AppSidebar = ({ products = [], onFilterChange }) => {
-  // Dynamically get max price from products
-  const productPrices = products.map(p => p.price || 0);
-  const maxPrice = productPrices.length ? Math.max(...productPrices) : 1000;
+  // Dynamically calculate max price from products
+  const maxPriceFromProducts = useMemo(() => {
+    const prices = products.map(p => p.price || 0);
+    return prices.length ? Math.max(...prices) : 1000;
+  }, [products]);
 
+  // Initialize filters AFTER products are loaded
   const [filters, setFilters] = useState({
     search: "",
     subCategory: "all",
-    priceRange: [0, maxPrice],
+    priceRange: [0, 1000], // temporary, will set after products load
   });
+
+  // Set initial price range once products are loaded
+  useEffect(() => {
+    if (products.length) {
+      setFilters(prev => ({
+        ...prev,
+        priceRange: [0, maxPriceFromProducts],
+      }));
+    }
+  }, [products, maxPriceFromProducts]);
 
   const subCategories = [...new Set(products.map(p => p.category?.subCategory).filter(Boolean))];
 
   const filteredProducts = useMemo(() => {
-    if (!products.length) return [];
-
-    return products.filter((product) => {
+    return products.filter(product => {
       const name = product.name?.toLowerCase() || "";
       const subCat = product.category?.subCategory?.toLowerCase() || "";
       const price = typeof product.price === "number" ? product.price : 0;
@@ -40,15 +51,15 @@ const AppSidebar = ({ products = [], onFilterChange }) => {
           : subCat === filters.subCategory.toLowerCase();
       const matchPrice =
         price >= (filters.priceRange?.[0] ?? 0) &&
-        price <= (filters.priceRange?.[1] ?? maxPrice);
+        price <= (filters.priceRange?.[1] ?? maxPriceFromProducts);
 
       return matchName && matchSubCategory && matchPrice;
     });
-  }, [products, filters, maxPrice]);
+  }, [products, filters, maxPriceFromProducts]);
 
   useEffect(() => {
-    if (products.length) onFilterChange(filteredProducts);
-  }, [filteredProducts, onFilterChange, products.length]);
+    onFilterChange(filteredProducts);
+  }, [filteredProducts, onFilterChange]);
 
   return (
     <Sidebar>
@@ -57,6 +68,7 @@ const AppSidebar = ({ products = [], onFilterChange }) => {
       </SidebarHeader>
 
       <SidebarContent className="px-4 space-y-6">
+        {/* Search */}
         <SidebarGroup>
           <SidebarGroupLabel>Search</SidebarGroupLabel>
           <SidebarGroupContent>
@@ -68,6 +80,7 @@ const AppSidebar = ({ products = [], onFilterChange }) => {
           </SidebarGroupContent>
         </SidebarGroup>
 
+        {/* Category */}
         <SidebarGroup>
           <SidebarGroupLabel>Category</SidebarGroupLabel>
           <SidebarGroupContent>
@@ -88,13 +101,14 @@ const AppSidebar = ({ products = [], onFilterChange }) => {
           </SidebarGroupContent>
         </SidebarGroup>
 
+        {/* Price Range */}
         <SidebarGroup>
           <SidebarGroupLabel>
             Price: ${filters.priceRange[0]} - ${filters.priceRange[1]}
           </SidebarGroupLabel>
           <SidebarGroupContent className="pt-4">
             <Slider
-              max={maxPrice}
+              max={maxPriceFromProducts}
               step={10}
               value={filters.priceRange}
               onValueChange={(val) => setFilters({ ...filters, priceRange: val })}
@@ -102,10 +116,11 @@ const AppSidebar = ({ products = [], onFilterChange }) => {
           </SidebarGroupContent>
         </SidebarGroup>
 
+        {/* Reset */}
         <Button
           variant="outline"
           className="w-full"
-          onClick={() => setFilters({ search: "", subCategory: "all", priceRange: [0, maxPrice] })}
+          onClick={() => setFilters({ search: "", subCategory: "all", priceRange: [0, maxPriceFromProducts] })}
         >
           Reset Filters
         </Button>

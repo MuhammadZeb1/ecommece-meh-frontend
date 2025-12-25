@@ -1,36 +1,34 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom"; // <-- important
+import { useParams } from "react-router-dom";
 import { fetchProducts } from "../redux/products/productsSlice";
 import ProductCard from "../components/ProductCard";
+import ProductFilter from "../components/ProductFilter";
 
 const CategoryPage = () => {
   const dispatch = useDispatch();
   const { items, loading } = useSelector((state) => state.products);
-  const [products, setProducts] = useState([]);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
-
-  // Get category from URL
   const { category } = useParams();
+
+  const [baseProducts, setBaseProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     dispatch(fetchProducts());
   }, [dispatch]);
 
   useEffect(() => {
-    // Filter products by category if category param exists
     if (category) {
-      setProducts(
-        items.filter(
-          (p) =>
-            p.category?.name?.toLowerCase() === category.toLowerCase()
-        )
+      const categoryProducts = items.filter(
+        (p) =>
+          p.category?.name?.toLowerCase() === category.toLowerCase()
       );
+      setBaseProducts(categoryProducts);
+      setFilteredProducts(categoryProducts);
     } else {
-      setProducts(items);
+      setBaseProducts(items);
+      setFilteredProducts(items);
     }
   }, [items, category]);
 
@@ -39,16 +37,32 @@ const CategoryPage = () => {
 
   return (
     <div className="min-h-screen w-full p-4 bg-gray-50">
-      <h1 className="text-2xl font-bold mb-6">
+
+      {/* 🔘 TOGGLE BUTTON */}
+      <button
+        onClick={() => setShowFilters(!showFilters)}
+        className="mb-4 px-4 py-2 border rounded-md bg-white shadow"
+      >
+        {showFilters ? "Hide Filters" : "Show Filters"}
+      </button>
+
+      {/* 🔥 FILTER */}
+      {showFilters && (
+        <ProductFilter
+          products={baseProducts}
+          onFilterChange={setFilteredProducts}
+        />
+      )}
+
+      <h1 className="text-2xl font-bold my-6">
         {category ? `${category} Products` : "All Products"}
       </h1>
-      <button></button>
 
-      {products.length === 0 ? (
+      {filteredProducts.length === 0 ? (
         <p className="text-center mt-4">No products found.</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {products.map((product) => (
+          {filteredProducts.map((product) => (
             <ProductCard key={product._id} product={product} />
           ))}
         </div>

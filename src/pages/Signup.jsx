@@ -40,9 +40,12 @@ const Signup = () => {
       });
 
       localStorage.setItem("token", res.data.token);
-      setMessage("Google signup successful");
+        toast.success("Signup successful", {
+        position: "bottom-right",
+      });
+      navigate("/login");
     } catch (error) {
-      setMessage("Google signup failed");
+      toast.error("Google signup failed");
     }
   };
 

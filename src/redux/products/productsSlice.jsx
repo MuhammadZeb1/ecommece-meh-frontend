@@ -75,23 +75,32 @@ const productsSlice = createSlice({
       })
 
       // CREATE
+      // NEW UPDATED CODE
       .addCase(addProduct.fulfilled, (state, action) => {
-        state.items.unshift(action.payload.product);
+        state.loading = false;
+        // If bulk upload, add the array of products; otherwise, add the single product
+        if (action.payload.createdProducts) {
+          state.items = [...action.payload.createdProducts, ...state.items];
+        } else if (action.payload.product) {
+          state.items.unshift(action.payload.product);
+        }
       })
 
       // DELETE
       .addCase(deleteProduct.fulfilled, (state, action) => {
-        state.items = state.items.filter(
-          (p) => p._id !== action.payload
-        );
+        state.items = state.items.filter((p) => p._id !== action.payload);
       })
 
       // UPDATE
+      // Current Update logic
       .addCase(updateProduct.fulfilled, (state, action) => {
         const index = state.items.findIndex(
           (p) => p._id === action.payload.product._id
         );
-        state.items[index] = action.payload.product;
+        // Add this 'if' check to prevent errors if the index is -1
+        if (index !== -1) {
+          state.items[index] = action.payload.product;
+        }
       });
   },
 });

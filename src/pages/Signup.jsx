@@ -23,9 +23,7 @@ const Signup = () => {
     try {
       const res = await api.post("/auth/signup", form);
       localStorage.setItem("token", res.data.token);
-      toast.success("Signup successful", {
-        position: "bottom-right",
-      });
+      toast.success("Signup successful");
       navigate("/login");
     } catch (err) {
       toast.error(err.response?.data?.message || "Signup failed");
@@ -40,9 +38,7 @@ const Signup = () => {
       });
 
       localStorage.setItem("token", res.data.token);
-        toast.success("Signup successful", {
-        position: "bottom-right",
-      });
+        toast.success("Signup successful");
       navigate("/login");
     } catch (error) {
       toast.error("Google signup failed");

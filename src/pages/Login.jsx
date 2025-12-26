@@ -24,7 +24,7 @@ const Login = () => {
       localStorage.setItem("token", res.data.token);
       setMessage("Login successful");
       toast.success("Login successful");
-      navigate("/dashboard");
+      navigate("/");
     } catch (err) {
       toast.error(err.response?.data?.message || "Login failed");
     }
@@ -38,7 +38,9 @@ const Login = () => {
       });
 
       localStorage.setItem("token", res.data.token);
-      setMessage("Google login successful");
+      setMessage("Login successful");
+      toast.success("Login successful");
+      navigate("/");
     } catch (error) {
       setMessage("Google login failed");
     }

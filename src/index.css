@@ -125,3 +125,22 @@
     @apply bg-background text-foreground;
    }
 }
+
+/* Ensure the Navbar is always the top-most layer */
+nav, .navbar-container-class {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: white; /* Prevent transparency */
+}
+
+/* Push the Shadcn Sidebar provider/sidebar down */
+[data-sidebar="sidebar"] {
+  top: 64px !important; /* Matches your Navbar height */
+  height: calc(100vh - 64px) !important;
+}
+
+/* Also adjust the trigger button if it gets hidden */
+[data-sidebar="trigger"] {
+  z-index: 60;
+}

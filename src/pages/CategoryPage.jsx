@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { fetchProducts } from "../redux/products/productsSlice";
+import { motion, AnimatePresence } from "framer-motion";
 
 const CategoryPage = () => {
   const dispatch = useDispatch();
@@ -22,18 +23,27 @@ const CategoryPage = () => {
   // Filter by category from URL
   useEffect(() => {
     const filtered = category
-      ? items.filter((p) => p.category?.name?.toLowerCase() === category.toLowerCase())
+      ? items.filter(
+          (p) => p.category?.name?.toLowerCase() === category.toLowerCase()
+        )
       : items;
 
     setBaseProducts(filtered);
     setFilteredProducts(filtered); // show all by default
   }, [items, category]);
 
-  if (loading) return <div className="flex justify-center p-10">Loading...</div>;
+  if (loading)
+    return <div className="flex justify-center p-10">Loading...</div>;
 
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen w-full">
+      <motion.div
+        className="flex min-h-screen w-full"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.5 }}
+      >
         {/* Sidebar */}
         <AppSidebar products={baseProducts} onFilterChange={setFilteredProducts} />
 
@@ -46,16 +56,39 @@ const CategoryPage = () => {
           </div>
 
           {filteredProducts.length === 0 ? (
-            <p className="text-muted-foreground text-center py-10">No products found.</p>
+            <p className="text-muted-foreground text-center py-10">
+              No products found.
+            </p>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredProducts.map((product) => (
-                <ProductCard key={product._id} product={product} />
-              ))}
-            </div>
+            <motion.div
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+              initial="hidden"
+              animate="visible"
+              variants={{
+                hidden: {},
+                visible: {
+                  transition: {
+                    staggerChildren: 0.1,
+                  },
+                },
+              }}
+            >
+              <AnimatePresence>
+                {filteredProducts.map((product) => (
+                  <motion.div
+                    key={product._id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 20 }}
+                  >
+                    <ProductCard product={product} />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </motion.div>
           )}
         </main>
-      </div>
+      </motion.div>
     </SidebarProvider>
   );
 };

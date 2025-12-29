@@ -24,7 +24,7 @@ function Navbar() {
   const categories = ["Men", "Women", "Kids"];
 
   return (
-    <div className="flex items-center justify-between px-6 py-4 bg-white border-b shadow-sm">
+    <div className="sticky top-0 z-50 flex items-center justify-between px-6 py-4 bg-white border-b shadow-sm">
       {/* Left side: Logo */}
       <div className="flex-1">
         <span className="text-2xl font-bold text-blue-600">MyProject</span>

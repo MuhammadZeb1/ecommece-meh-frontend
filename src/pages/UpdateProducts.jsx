@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { fetchProducts, updateProduct } from "../redux/products/productsSlice";
 import { motion } from "framer-motion";
+import { toast } from "react-toastify";
 
 const UpdateProductPage = () => {
   const { id } = useParams();
@@ -20,8 +21,16 @@ const UpdateProductPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-    dispatch(updateProduct({ id, formData }));
-    console.log("kah")
+
+    dispatch(updateProduct({ id, formData }))
+      .unwrap()
+      .then(() => {
+        toast.success("Product updated successfully!");
+        navigate(-1); // go back to previous page
+      })
+      .catch((err) => {
+        toast.error(err || "Failed to update product");
+      });
   };
 
   if (!product)
@@ -45,9 +54,9 @@ const UpdateProductPage = () => {
         className="card w-full max-w-md shadow-lg bg-base-100"
         initial={{ y: 40, opacity: 0, scale: 0.95 }}
         animate={{ y: 0, opacity: 1, scale: 1 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
       >
         <div className="card-body">
-          
           {/* BACK BUTTON */}
           <button
             onClick={() => navigate(-1)}
@@ -93,6 +102,7 @@ const UpdateProductPage = () => {
             <motion.button
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
+              type="submit"
               className="btn btn-primary w-full"
             >
               Update Product

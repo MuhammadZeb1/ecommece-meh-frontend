@@ -2,7 +2,7 @@ import { useState } from "react";
 import api from "../services/api";
 import { GoogleLogin } from "@react-oauth/google";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 
 const Login = () => {
   const [form, setForm] = useState({
@@ -10,7 +10,7 @@ const Login = () => {
     password: "",
   });
   const [message, setMessage] = useState("");
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -22,7 +22,6 @@ const Login = () => {
     try {
       const res = await api.post("/auth/login", form);
       localStorage.setItem("token", res.data.token);
-      setMessage("Login successful");
       toast.success("Login successful");
       navigate("/");
     } catch (err) {
@@ -38,7 +37,6 @@ const Login = () => {
       });
 
       localStorage.setItem("token", res.data.token);
-      setMessage("Login successful");
       toast.success("Login successful");
       navigate("/");
     } catch (error) {
@@ -58,8 +56,10 @@ const Login = () => {
             </label>
             <input
               name="email"
+              type="email"
               className="input border border-black"
               onChange={handleChange}
+              required
             />
           </div>
 
@@ -72,6 +72,7 @@ const Login = () => {
               type="password"
               className="input border border-black"
               onChange={handleChange}
+              required
             />
           </div>
 
@@ -85,8 +86,19 @@ const Login = () => {
           onError={() => setMessage("Google Login Failed")}
         />
 
+        {/* SIGNUP LINK */}
+        <p className="text-center text-sm mt-4">
+          Don’t have an account?{" "}
+          <NavLink
+            to="/signup"
+            className="text-blue-600 font-semibold hover:underline"
+          >
+            Sign up
+          </NavLink>
+        </p>
+
         {message && (
-          <p className="text-center text-sm mt-4 text-error">{message}</p>
+          <p className="text-center text-sm mt-2 text-error">{message}</p>
         )}
       </div>
     </div>

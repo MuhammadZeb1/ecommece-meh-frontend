@@ -3,6 +3,7 @@ import api from "../services/api";
 import { GoogleLogin } from "@react-oauth/google";
 import { useNavigate, NavLink } from "react-router-dom";
 import { toast } from "react-toastify";
+import { motion } from "framer-motion";
 
 const Signup = () => {
   const [form, setForm] = useState({
@@ -46,8 +47,18 @@ const Signup = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <div className="card w-96 bg-white shadow-xl p-6">
+    <motion.div
+      className="flex justify-center items-center h-screen bg-gray-100"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4 }}
+    >
+      <motion.div
+        className="card w-96 bg-white shadow-xl p-6"
+        initial={{ y: 40, opacity: 0, scale: 0.95 }}
+        animate={{ y: 0, opacity: 1, scale: 1 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
+      >
         <h2 className="text-2xl font-bold text-center mb-4">Signup</h2>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -89,17 +100,29 @@ const Signup = () => {
             />
           </div>
 
-          <button className="btn btn-primary w-full">Signup</button>
+          <motion.button
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            className="btn btn-primary w-full"
+          >
+            Signup
+          </motion.button>
         </form>
 
         <div className="divider">OR</div>
 
-        <GoogleLogin
-          onSuccess={handleGoogleSuccess}
-          onError={() => setMessage("Google Signup Failed")}
-        />
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="flex justify-center"
+        >
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={() => setMessage("Google Signup Failed")}
+          />
+        </motion.div>
 
-        {/* LOGIN LINK */}
         <p className="text-center text-sm mt-4">
           Already have an account?{" "}
           <NavLink
@@ -113,8 +136,8 @@ const Signup = () => {
         {message && (
           <p className="text-center text-sm mt-2 text-error">{message}</p>
         )}
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 

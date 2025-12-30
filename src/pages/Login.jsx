@@ -19,31 +19,45 @@ const Login = () => {
 
   // NORMAL LOGIN
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await api.post("/auth/login", form);
-      localStorage.setItem("token", res.data.token);
-      toast.success("Login successful");
-      navigate("/");
-    } catch (err) {
-      toast.error(err.response?.data?.message || "Login failed");
-    }
-  };
+  e.preventDefault();
+  try {
+    const res = await api.post("/auth/login", form);
 
+    // ✅ SAVE TOKEN + ROLE
+    localStorage.setItem("token", res.data.token);
+    localStorage.setItem("role", res.data.user.role);
+
+    console.log("ROLE FROM LOGIN:", res.data.user.role);
+
+    toast.success("Login successful");
+    navigate("/");
+  } catch (err) {
+    toast.error(err.response?.data?.message || "Login failed");
+  }
+};
+
+  
   // GOOGLE LOGIN
   const handleGoogleSuccess = async (credentialResponse) => {
-    try {
-      const res = await api.post("/auth/google", {
-        token: credentialResponse.credential,
-      });
+  try {
+    const res = await api.post("/auth/google", {
+      token: credentialResponse.credential,
+    });
 
-      localStorage.setItem("token", res.data.token);
-      toast.success("Login successful");
-      navigate("/");
-    } catch (error) {
-      setMessage("Google login failed");
-    }
-  };
+    // ✅ SAVE TOKEN + ROLE
+    localStorage.setItem("token", res.data.token);
+    localStorage.setItem("role", res.data.user.role);
+
+    console.log("ROLE FROM GOOGLE LOGIN:", res.data.user.role);
+
+    toast.success("Login successful");
+    navigate("/");
+  } catch (error) {
+    toast.error("Google login failed");
+  }
+};
+
+  
 
   return (
     <motion.div

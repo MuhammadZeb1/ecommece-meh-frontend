@@ -10,6 +10,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CategoryPage from "./pages/CategoryPage";
 
+//  const token = localStorage.getItem(token)
 
 function App() {
   return (

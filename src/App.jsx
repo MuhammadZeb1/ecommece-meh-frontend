@@ -13,6 +13,7 @@ import KidProduct from "./pages/KidProduct";
 import UserProductList from "./pages/UserProductList";
 import { User } from "lucide-react";
 import UserNavbar from "./components/UserNavbar";
+import AdminNavbar from "./components/AdminNavbar";
 
 //  const token = localStorage.getItem(token)
 
@@ -24,7 +25,7 @@ function App() {
       <ToastContainer position="top-right" autoClose={3000} />
 
       <Navbar />
-      <UserNavbar />
+      {/* <UserNavbar /> */}
 
       {/* ✅ Sidebar Context */}
         <Routes>

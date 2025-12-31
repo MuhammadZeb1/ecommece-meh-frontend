@@ -1,63 +1,44 @@
 import { useState } from "react";
-import api from "../services/api";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser, loginWithGoogle } from "../redux/auth/authSlice";
 import { GoogleLogin } from "@react-oauth/google";
 import { toast } from "react-toastify";
 import { useNavigate, NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
 
 const Login = () => {
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-  });
+  const [form, setForm] = useState({ email: "", password: "" });
   const [message, setMessage] = useState("");
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { loading } = useSelector((state) => state.auth);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   // NORMAL LOGIN
-  const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const res = await api.post("/auth/login", form);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(loginUser(form))
+      .unwrap()
+      .then(() => {
+        toast.success("Login successful");
+        navigate("/");
+      })
+      .catch((err) => toast.error(err));
+  };
 
-    // ✅ SAVE TOKEN + ROLE
-    localStorage.setItem("token", res.data.token);
-    localStorage.setItem("role", res.data.user.role);
-
-    console.log("ROLE FROM LOGIN:", res.data.user.role);
-
-    toast.success("Login successful");
-    navigate("/");
-  } catch (err) {
-    toast.error(err.response?.data?.message || "Login failed");
-  }
-};
-
-  
   // GOOGLE LOGIN
-  const handleGoogleSuccess = async (credentialResponse) => {
-  try {
-    const res = await api.post("/auth/google", {
-      token: credentialResponse.credential,
-    });
-
-    // ✅ SAVE TOKEN + ROLE
-    localStorage.setItem("token", res.data.token);
-    localStorage.setItem("role", res.data.user.role);
-
-    console.log("ROLE FROM GOOGLE LOGIN:", res.data.user.role);
-
-    toast.success("Login successful");
-    navigate("/");
-  } catch (error) {
-    toast.error("Google login failed");
-  }
-};
-
-  
+  const handleGoogleSuccess = (credentialResponse) => {
+    dispatch(loginWithGoogle(credentialResponse.credential))
+      .unwrap()
+      .then(() => {
+        toast.success("Login successful");
+        navigate("/");
+      })
+      .catch(() => toast.error("Google login failed"));
+  };
 
   return (
     <motion.div
@@ -105,8 +86,9 @@ const Login = () => {
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
             className="btn btn-primary w-full"
+            disabled={loading}
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </motion.button>
         </form>
 

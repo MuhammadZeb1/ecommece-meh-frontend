@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { fetchProducts } from "../redux/products/productsSlice";
 import { motion, AnimatePresence } from "framer-motion";
+import UserCardProduct from "@/components/UserCardProduct";
 
 const UserProductList = () => {
   const dispatch = useDispatch();
@@ -81,7 +82,7 @@ const UserProductList = () => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 20 }}
                   >
-                    <ProductCard product={product} />
+                    <UserCardProduct product={product} />
                   </motion.div>
                 ))}
               </AnimatePresence>

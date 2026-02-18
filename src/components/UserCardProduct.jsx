@@ -1,9 +1,17 @@
-import { User } from "lucide-react";
 import React from "react";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../redux/cart/cartSlice"; // adjust path if needed
 
 const UserCardProduct = ({ product }) => {
+  const dispatch = useDispatch();
+
+  const handleAddToCart = () => {
+    console.log("click ,",product)
+    dispatch(addToCart(product));
+  };
+
   return (
-    <div className="border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow duration-300 bg-white">
+    <div className="border rounded-lg p-4 shadow-sm hover:shadow-md bg-white">
       <img
         src={product.image}
         alt={product.name}
@@ -17,22 +25,12 @@ const UserCardProduct = ({ product }) => {
         <span className="font-semibold text-lg">
           ${product.price.toFixed(2)}
         </span>
-        {product.category?.subCategory && (
-          <span className="text-xs text-gray-400">
-            {product.category.subCategory}
-          </span>
-        )}
       </div>
 
-      {/* Color / variants placeholder */}
-      <div className="flex items-center gap-2 mb-2">
-        {/* Example static colors */}
-        <span className="w-4 h-4 rounded-full bg-black border"></span>
-        <span className="w-4 h-4 rounded-full bg-gray-300 border"></span>
-        <span className="w-4 h-4 rounded-full bg-white border"></span>
-      </div>
-
-      <button className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">
+      <button
+        onClick={handleAddToCart}
+        className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
+      >
         Add to Cart
       </button>
     </div>

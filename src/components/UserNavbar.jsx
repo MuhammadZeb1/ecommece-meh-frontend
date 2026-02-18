@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { FaHome, FaUser, FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
+import { FaHome, FaUser, FaSignInAlt, FaSignOutAlt, FaShoppingCart } from "react-icons/fa";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -15,13 +15,14 @@ export default function UserNavbar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { token } = useSelector((state) => state.auth);
+  const cartItems = useSelector((state) => state.cart.items); // get cart items
 
   const handleLogout = () => {
     dispatch(logout());
-    navigate("/login"); // logout پر login page پر redirect
+    navigate("/login");
   };
 
-  const categories = ["Men", "Women", "Kids"]; // direct links in navbar
+  const categories = ["Men", "Women", "Kids"];
 
   return (
     <div className="sticky top-0 z-50 flex items-center justify-between px-6 py-4 bg-white border-b shadow-sm">
@@ -49,9 +50,30 @@ export default function UserNavbar() {
             </NavLink>
           </NavigationMenuItem>
 
+          {/* Cart link */}
+          <NavigationMenuItem>
+            <NavLink
+              to="/cart"
+              className={({ isActive }) =>
+                cn(
+                  navigationMenuTriggerStyle(),
+                  "flex gap-2 items-center",
+                  isActive && "bg-accent text-accent-foreground font-bold"
+                )
+              }
+            >
+              <FaShoppingCart /> Cart
+              {cartItems.length > 0 && (
+                <span className="ml-1 px-2 py-0.5 bg-red-600 text-white text-xs rounded-full">
+                  {cartItems.length}
+                </span>
+              )}
+            </NavLink>
+          </NavigationMenuItem>
+
           {token ? (
             <>
-              {/* Direct categories visible */}
+              {/* Direct categories */}
               {categories.map((cat) => (
                 <NavigationMenuItem key={cat}>
                   <NavLink
@@ -84,7 +106,7 @@ export default function UserNavbar() {
             </>
           ) : (
             <>
-              {/* Login + Signup for logged-out user */}
+              {/* Login + Signup */}
               <NavigationMenuItem>
                 <NavLink
                   to="/signup"

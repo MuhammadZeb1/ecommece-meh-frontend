@@ -11,6 +11,7 @@ import UserCardProduct from "@/components/UserCardProduct";
 const UserProductList = () => {
   const dispatch = useDispatch();
   const { items, loading } = useSelector((state) => state.products);
+  console.log("items",items)
   const { category } = useParams();
 
   const [baseProducts, setBaseProducts] = useState([]);

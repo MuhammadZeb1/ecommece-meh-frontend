@@ -21,6 +21,8 @@ function AdminNavbar() {
   // Get token & role from Redux state
   const { token, role } = useSelector((state) => state.auth);
 
+  console.log("role,",role)
+
 
   const handleLogout = () => {
     dispatch(logout());

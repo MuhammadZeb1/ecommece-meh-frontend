@@ -8,7 +8,7 @@ const CreateProduct = () => {
   const dispatch = useDispatch();
   const bulkInputRef = useRef(null);
 
-  // 1. Handle Single Product
+  // 1️⃣ Handle Single Product
   const handleSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -16,13 +16,13 @@ const CreateProduct = () => {
     dispatch(addProduct(formData))
       .unwrap()
       .then(() => {
-        toast.success("Product created!");
+        toast.success("Product created successfully!");
         e.target.reset();
       })
-      .catch((err) => toast.error(err));
+      .catch((err) => toast.error(err?.message || err));
   };
 
-  // 2. Handle Bulk Upload
+  // 2️⃣ Handle Bulk Upload
   const handleBulkFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -36,7 +36,7 @@ const CreateProduct = () => {
         toast.success("Bulk products uploaded successfully!");
         e.target.value = null;
       })
-      .catch((err) => toast.error(err));
+      .catch((err) => toast.error(err?.message || err));
   };
 
   return (
@@ -64,6 +64,7 @@ const CreateProduct = () => {
               className="input border border-black w-full"
               required
             />
+
             <input
               name="price"
               placeholder="Price"
@@ -71,16 +72,29 @@ const CreateProduct = () => {
               className="input border border-black w-full"
               required
             />
+
+            {/* ✅ Quantity Added */}
+            <input
+              name="quantity"
+              placeholder="Quantity"
+              type="number"
+              className="input border border-black w-full"
+              required
+            />
+
             <input
               name="categoryName"
               placeholder="Category"
               className="input border border-black w-full"
+              required
             />
+
             <input
               name="subCategory"
               placeholder="Sub Category"
               className="input border border-black w-full"
             />
+
             <textarea
               name="description"
               placeholder="Description"
@@ -96,6 +110,7 @@ const CreateProduct = () => {
                 name="file"
                 className="file-input file-input-bordered w-full"
                 accept="image/*"
+                required
               />
             </div>
 

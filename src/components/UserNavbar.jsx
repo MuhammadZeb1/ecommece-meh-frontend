@@ -14,7 +14,11 @@ import { logout } from "../redux/auth/authSlice";
 export default function UserNavbar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { token } = useSelector((state) => state.auth);
+  const { token, role } = useSelector((state) => state.auth);
+
+  console.log("token ,",token)
+  console.log("role ,",role)
+
   const cartItems = useSelector((state) => state.cart.items); // get cart items
 
   const handleLogout = () => {

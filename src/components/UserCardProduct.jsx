@@ -1,13 +1,26 @@
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../redux/cart/cartSlice"; 
 
 const UserCardProduct = ({ product }) => {
   const dispatch = useDispatch();
+  
+  // 1. Get current cart items from Redux to check quantity already added
+  const cartItems = useSelector((state) => state.cart.items);
+  
+  // 2. Find this specific product in the cart
+  const cartItem = cartItems.find((item) => item._id === product._id);
+  const qtyInCart = cartItem ? (cartItem.cartQty || cartItem.quantity || 0) : 0;
+
+  // 3. Logic: Compare cart quantity vs total available stock
+  const isOutOfStock = product.quantity <= 0;
+  const isLimitReached = qtyInCart >= product.quantity;
 
   const handleAddToCart = () => {
-    console.log("Adding to cart:", product);
-    dispatch(addToCart(product));
+    if (!isLimitReached) {
+      console.log("Adding to cart:", product);
+      dispatch(addToCart(product));
+    }
   };
 
   return (
@@ -22,7 +35,7 @@ const UserCardProduct = ({ product }) => {
       {/* PRODUCT TITLE */}
       <h3 className="text-md font-bold mb-1">{product.name}</h3>
       
-      {/* CATEGORY & SUBCATEGORY (Matching your Schema) */}
+      {/* CATEGORY & SUBCATEGORY */}
       {product.category && (
         <p className="text-xs text-blue-600 font-medium mb-1">
           {product.category.name} {product.category.subCategory ? `• ${product.category.subCategory}` : ""}
@@ -38,27 +51,35 @@ const UserCardProduct = ({ product }) => {
           ${product.price.toFixed(2)}
         </span>
 
-        {/* QUANTITY (Matching your Schema) */}
+        {/* QUANTITY DISPLAY */}
         <div className="flex flex-col items-end">
           <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded shadow-sm ${
-            product.quantity > 0 ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+            isOutOfStock ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"
           }`}>
-            {product.quantity > 0 ? `Stock: ${product.quantity}` : "Out of Stock"}
+            {isOutOfStock ? "Out of Stock" : `Stock: ${product.quantity}`}
           </span>
         </div>
       </div>
 
-      {/* ADD TO CART BUTTON */}
+      {/* UPDATED BUTTON LOGIC */}
       <button
         onClick={handleAddToCart}
-        disabled={product.quantity <= 0}
+        disabled={isOutOfStock || isLimitReached}
         className={`w-full py-2.5 rounded-md font-semibold text-white transition-all ${
-          product.quantity <= 0 
+          (isOutOfStock || isLimitReached)
             ? "bg-gray-300 cursor-not-allowed" 
-            : "bg-indigo-600 hover:bg-indigo-700 active:scale-95"
+            : product.quantity < 10 
+              ? "bg-orange-500 hover:bg-orange-600 active:scale-95" 
+              : "bg-indigo-600 hover:bg-indigo-700 active:scale-95"
         }`}
       >
-        {product.quantity <= 0 ? "Unavailable" : "Add to Cart"}
+        {isOutOfStock 
+          ? "Sold Out" 
+          : isLimitReached 
+            ? "Limit in Cart Reached" 
+            : product.quantity < 10 
+              ? `Only ${product.quantity} Left - Add` 
+              : "Add to Cart"}
       </button>
     </div>
   );

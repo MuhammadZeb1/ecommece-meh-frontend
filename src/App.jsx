@@ -15,6 +15,7 @@ import { User } from "lucide-react";
 import UserNavbar from "./components/UserNavbar";
 import AdminNavbar from "./components/AdminNavbar";
 import Cart from "./pages/Cart";
+import Checkout from "./pages/Checkout";
 
 //  const token = localStorage.getItem(token)
 
@@ -45,6 +46,7 @@ function App() {
           {/* Add other routes as needed */}
           <Route path="/kidProduct" element={<KidProduct />} />
           <Route path="/user/products/:category" element={<UserProductList />} />
+          <Route path="/checkout" element={<Checkout />} />
         </Routes>
       
     </>

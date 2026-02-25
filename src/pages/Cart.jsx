@@ -6,11 +6,12 @@ import {
   clearCart,
 } from "../redux/cart/cartSlice";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom"; // ✅ import useNavigate
 
 const Cart = () => {
   const items = useSelector((state) => state.cart.items);
-  console.log("items",items)
   const dispatch = useDispatch();
+  const navigate = useNavigate(); // ✅ initialize navigate
 
   const total = items.reduce(
     (sum, item) => sum + item.price * (item.cartQty ?? 1),
@@ -144,7 +145,11 @@ const Cart = () => {
             Clear Cart
           </button>
 
-          <button className="px-10 py-2 bg-black text-white rounded font-bold hover:bg-gray-800 transition-colors">
+          {/* ✅ Checkout Button */}
+          <button
+            onClick={() => navigate("/checkout")} // navigate to Checkout page
+            className="px-10 py-2 bg-black text-white rounded font-bold hover:bg-gray-800 transition-colors"
+          >
             Checkout
           </button>
         </div>

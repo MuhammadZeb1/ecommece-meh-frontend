@@ -45,7 +45,7 @@ const authSlice = createSlice({
       state.role = null;
       localStorage.removeItem("token");
       localStorage.removeItem("role");
-      console.log("User logged out. Token and role cleared.");
+      
     },
   },
   extraReducers: (builder) => {
@@ -54,7 +54,7 @@ const authSlice = createSlice({
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.error = null;
-        console.log("Login pending...");
+       
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
@@ -62,19 +62,19 @@ const authSlice = createSlice({
         state.role = action.payload.role;
         localStorage.setItem("token", action.payload.token);
         localStorage.setItem("role", action.payload.role);
-        console.log("Normal Login Success:", action.payload);
+        
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-        console.log("Normal Login Failed:", action.payload);
+       
       })
 
       // Google login
       .addCase(loginWithGoogle.pending, (state) => {
         state.loading = true;
         state.error = null;
-        console.log("Google login pending...");
+       
       })
       .addCase(loginWithGoogle.fulfilled, (state, action) => {
         state.loading = false;
@@ -82,12 +82,11 @@ const authSlice = createSlice({
         state.role = action.payload.role;
         localStorage.setItem("token", action.payload.token);
         localStorage.setItem("role", action.payload.role);
-        console.log("Google Login Success:", action.payload);
       })
       .addCase(loginWithGoogle.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-        console.log("Google Login Failed:", action.payload);
+      
       });
   },
 });

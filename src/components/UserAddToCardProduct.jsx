@@ -5,8 +5,10 @@ const UserCardProduct = ({ product }) => {
   const dispatch = useDispatch();
 
   // Logic to determine the stock message and color
-  const isOutOfStock = product.quantity <= 0;
-  const isLowStock = product.quantity > 0 && product.quantity < 10;
+  // const isOutOfStock = product.quantity <= 0;
+
+  // const isLowStock = product.quantity > 0 && product.quantity < 10;
+  // console.log(isLowStock,isOutOfStock)
 
   return (
     <div className="border rounded-lg p-4 shadow-sm hover:shadow-md bg-white flex flex-col h-full">
@@ -56,7 +58,7 @@ const UserCardProduct = ({ product }) => {
         {isOutOfStock ? "Temporarily Unavailable" : "Add to Cart"}
       </button>
     </div>
-  );
+  )
 };
 
 export default UserCardProduct;

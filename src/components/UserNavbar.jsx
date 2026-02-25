@@ -16,8 +16,6 @@ export default function UserNavbar() {
   const dispatch = useDispatch();
   const { token, role } = useSelector((state) => state.auth);
 
-  console.log("token ,",token)
-  console.log("role ,",role)
 
   const cartItems = useSelector((state) => state.cart.items); // get cart items
 

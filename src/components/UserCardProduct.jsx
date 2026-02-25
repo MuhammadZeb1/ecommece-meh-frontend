@@ -7,6 +7,7 @@ const UserCardProduct = ({ product }) => {
   
   // 1. Get current cart items from Redux to check quantity already added
   const cartItems = useSelector((state) => state.cart.items);
+  console.log("cartItems",cartItems)
   
   // 2. Find this specific product in the cart
   const cartItem = cartItems.find((item) => item._id === product._id);
@@ -15,10 +16,11 @@ const UserCardProduct = ({ product }) => {
   // 3. Logic: Compare cart quantity vs total available stock
   const isOutOfStock = product.quantity <= 0;
   const isLimitReached = qtyInCart >= product.quantity;
+  // console.table(isLimitReached,isOutOfStock)
 
   const handleAddToCart = () => {
     if (!isLimitReached) {
-      console.log("Adding to cart:", product);
+      
       dispatch(addToCart(product));
     }
   };

@@ -11,7 +11,7 @@ import UserCardProduct from "@/components/UserCardProduct";
 const UserProductList = () => {
   const dispatch = useDispatch();
   const { items, loading } = useSelector((state) => state.products);
-  // console.log("items",items)
+  
   const { category } = useParams();
 
   const [baseProducts, setBaseProducts] = useState([]);
@@ -33,7 +33,7 @@ const UserProductList = () => {
     setBaseProducts(filtered);
     setFilteredProducts(filtered); // show all by default
   }, [items, category]);
-
+   console.log("khan")
   if (loading)
     return <div className="flex justify-center p-10">Loading...</div>;
 

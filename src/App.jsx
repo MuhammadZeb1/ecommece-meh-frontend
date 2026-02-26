@@ -16,6 +16,8 @@ import UserNavbar from "./components/UserNavbar";
 import AdminNavbar from "./components/AdminNavbar";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
+import AdminPurchases from "./pages/AdminPurchases";
+import Purchases from "./pages/Purchases";
 
 //  const token = localStorage.getItem(token)
 
@@ -47,6 +49,8 @@ function App() {
           <Route path="/kidProduct" element={<KidProduct />} />
           <Route path="/user/products/:category" element={<UserProductList />} />
           <Route path="/checkout" element={<Checkout />} />
+          <Route path="/admin/purchases" element={<AdminPurchases />} />
+          <Route path="/customer/purchases" element={<Purchases />} />
         </Routes>
       
     </>

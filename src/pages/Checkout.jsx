@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { clearCart } from "../redux/cart/cartSlice";
 import { toast } from "react-toastify";
+import { createPurchaseThunk } from "../redux/checkout/checkoutSlice";
+import { useNavigate } from "react-router-dom";
 
 const Checkout = () => {
   const items = useSelector((state) => state.cart.items);
@@ -10,10 +12,10 @@ const Checkout = () => {
     0
   );
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [userInfo, setUserInfo] = useState({
-    name: "",
-    email: "",
+
     address: "",
     city: "",
     postalCode: "",
@@ -24,15 +26,34 @@ const Checkout = () => {
     setUserInfo((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handlePayment = () => {
-    if (!userInfo.name || !userInfo.email || !userInfo.address) {
-      toast.error("Please fill in all required fields", { position: "top-center" });
+  const handlePayment = async () => {
+    // if (!userInfo.name || !userInfo.email || !userInfo.address) {
+    //   toast.error("Please fill in all required fields", { position: "top-center" });
+    //   return;
+    // }
+
+    if (items.length === 0) {
+      toast.error("Your cart is empty!", { position: "top-center" });
       return;
     }
 
-    // Placeholder: Here you can integrate Stripe/PayPal
-    toast.success("Payment successful!", { position: "top-center" });
-    dispatch(clearCart());
+    try {
+      // Prepare payload
+      const payload = { items, userInfo };
+
+      // Dispatch Redux thunk to create purchase
+      await dispatch(createPurchaseThunk(payload)).unwrap();
+
+      toast.success("Purchase successful!", { position: "top-center" });
+
+      // Clear cart
+      dispatch(clearCart());
+
+      // Navigate to purchases page
+      navigate("/purchases");
+    } catch (error) {
+      toast.error("Purchase failed: " + error, { position: "top-center" });
+    }
   };
 
   if (items.length === 0) {
@@ -47,22 +68,7 @@ const Checkout = () => {
       <div className="mb-6">
         <h2 className="text-xl font-semibold mb-3">Shipping Information</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input
-            type="text"
-            name="name"
-            placeholder="Full Name"
-            value={userInfo.name}
-            onChange={handleInputChange}
-            className="border p-2 rounded w-full"
-          />
-          <input
-            type="email"
-            name="email"
-            placeholder="Email Address"
-            value={userInfo.email}
-            onChange={handleInputChange}
-            className="border p-2 rounded w-full"
-          />
+          
           <input
             type="text"
             name="address"

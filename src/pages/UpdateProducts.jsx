@@ -26,7 +26,7 @@ const UpdateProductPage = () => {
       .unwrap()
       .then(() => {
         toast.success("Product updated successfully!");
-        navigate(-1); // go back to previous page
+        navigate(-1); 
       })
       .catch((err) => {
         toast.error(err || "Failed to update product");
@@ -46,7 +46,7 @@ const UpdateProductPage = () => {
 
   return (
     <motion.div
-      className="flex items-center justify-center min-h-screen bg-base-200"
+      className="flex items-center justify-center min-h-screen bg-base-200 p-4"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
     >
@@ -57,7 +57,6 @@ const UpdateProductPage = () => {
         transition={{ duration: 0.4, ease: "easeOut" }}
       >
         <div className="card-body">
-          {/* BACK BUTTON */}
           <button
             onClick={() => navigate(-1)}
             className="btn btn-sm btn-outline mb-2 w-fit"
@@ -70,42 +69,74 @@ const UpdateProductPage = () => {
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-3">
+            <label className="text-xs font-bold px-1">Product Name</label>
             <input
               name="name"
               defaultValue={product.name}
               className="input border border-black w-full"
             />
+
+            <div className="flex gap-2">
+              <div className="flex-1">
+                <label className="text-xs font-bold px-1">Base Price</label>
+                <input
+                  name="basePrice"
+                  defaultValue={product.basePrice}
+                  placeholder="e.g. $50"
+                  type="text"
+                  className="input border border-black w-full"
+                />
+              </div>
+              <div className="flex-1">
+                <label className="text-xs font-bold px-1">Sale Price</label>
+                <input
+                  name="price"
+                  defaultValue={product.price}
+                  type="number"
+                  className="input border border-black w-full"
+                />
+              </div>
+            </div>
+
+            <label className="text-xs font-bold px-1">Stock Quantity</label>
             <input
-              name="price"
-              defaultValue={product.price}
+              name="quantity"
+              defaultValue={product.quantity}
               type="number"
               className="input border border-black w-full"
             />
+
+            <label className="text-xs font-bold px-1">Category</label>
             <input
               name="categoryName"
               defaultValue={product.category?.name}
               className="input border border-black w-full"
             />
+
+            <label className="text-xs font-bold px-1">Sub Category</label>
             <input
               name="subCategory"
               defaultValue={product.category?.subCategory}
               className="input border border-black w-full"
             />
+
+            <label className="text-xs font-bold px-1">Description</label>
             <textarea
               name="description"
               defaultValue={product.description}
-              className="textarea border border-black w-full"
+              className="textarea border border-black w-full h-24"
             />
 
-            <input type="file" name="image" className="file-input w-full" />
+            <label className="text-xs font-bold px-1">Replace Image (Optional)</label>
+            <input type="file" name="file" className="file-input file-input-bordered w-full" />
 
             <motion.button
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               type="submit"
-              className="btn btn-primary w-full"
+              className="btn btn-primary w-full mt-4"
             >
-              Update Product
+              Save Changes
             </motion.button>
           </form>
         </div>

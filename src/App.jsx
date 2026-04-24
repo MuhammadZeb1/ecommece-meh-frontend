@@ -48,8 +48,8 @@ function App() {
         <Route path="/checkout" element={<Checkout />} />
         
         {/* Purchase History */}
-        <Route path="/admin/purchases" element={<AdminPurchases />} />
         <Route path="/customer/purchases" element={<Purchases />} />
+        <Route path="/admin/purchases" element={<AdminPurchases />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
       </Routes>
     </>

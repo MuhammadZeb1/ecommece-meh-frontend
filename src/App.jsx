@@ -19,6 +19,7 @@ import Checkout from "./pages/Checkout";
 // ✅ Removed duplicate imports here
 import AdminPurchases from "./pages/AdminPurchases";
 import Purchases from "./pages/Purchases";
+import AdminDashboard from "./pages/AdminDashboard";
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
         {/* Purchase History */}
         <Route path="/admin/purchases" element={<AdminPurchases />} />
         <Route path="/customer/purchases" element={<Purchases />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
       </Routes>
     </>
   );

@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import api from "../../services/api"; // Your axios instance
+import api from "../../services/api";
 
 // ------------------- ASYNC THUNKS -------------------
 
@@ -8,7 +8,7 @@ export const createPurchase = createAsyncThunk(
   "purchase/create",
   async (items, { rejectWithValue }) => {
     try {
-      const response = await api.post("/purchases", { items });
+      const response = await api.post("/purchases/customer", { items });
       return response.data;
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || "Purchase failed");
@@ -29,7 +29,7 @@ export const fetchCustomerPurchases = createAsyncThunk(
   }
 );
 
-// 3. Fetch Admin History
+// 3. Fetch Admin History (All Records)
 export const fetchAdminPurchases = createAsyncThunk(
   "purchase/fetchAdmin",
   async (_, { rejectWithValue }) => {
@@ -42,26 +42,40 @@ export const fetchAdminPurchases = createAsyncThunk(
   }
 );
 
-// 4. Delete Purchase by Admin (Removes from Admin list)
+// 4. ✅ NEW: Fetch Admin Analytics (Daily, Weekly, Monthly)
+export const fetchAdminAnalytics = createAsyncThunk(
+  "purchase/fetchAnalytics",
+  async (period, { rejectWithValue }) => {
+    try {
+      // period can be 'daily', 'weekly', or 'monthly'
+      const response = await api.get(`/purchases/admin/analytics?period=${period}`);
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || "Failed to fetch analytics");
+    }
+  }
+);
+
+// 5. Delete Purchase by Admin
 export const deleteAdminPurchase = createAsyncThunk(
   "purchase/deleteAdmin",
   async (purchaseId, { rejectWithValue }) => {
     try {
       await api.delete(`/purchases/admin/${purchaseId}`);
-      return purchaseId; // Return ID to filter state
+      return purchaseId;
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || "Delete failed");
     }
   }
 );
 
-// 5. Delete Purchase by Customer (Removes from personal list)
+// 6. Delete Purchase by Customer
 export const deleteCustomerPurchase = createAsyncThunk(
   "purchase/deleteCustomer",
   async (purchaseId, { rejectWithValue }) => {
     try {
       await api.delete(`/purchases/customer/${purchaseId}`);
-      return purchaseId; // Return ID to filter state
+      return purchaseId;
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || "Delete failed");
     }
@@ -75,28 +89,22 @@ const purchaseSlice = createSlice({
   initialState: {
     customerPurchases: [],
     adminPurchases: [],
+    analytics: {
+      summary: { totalSales: 0, totalProfit: 0, totalLoss: 0 },
+      bestSellingProducts: [],
+      totalTransactions: 0,
+    },
     loading: false,
     error: null,
   },
   reducers: {
-    // Clear error state if needed
     clearPurchaseError: (state) => {
       state.error = null;
     },
   },
   extraReducers: (builder) => {
     builder
-      // Pending State for all fetches
-      .addCase(fetchCustomerPurchases.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchAdminPurchases.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-
-      // Fetch Success
+      // 1. ALL .addCase MUST GO FIRST
       .addCase(fetchCustomerPurchases.fulfilled, (state, action) => {
         state.loading = false;
         state.customerPurchases = action.payload;
@@ -105,16 +113,16 @@ const purchaseSlice = createSlice({
         state.loading = false;
         state.adminPurchases = action.payload;
       })
-
-      // ✅ Delete Success: Admin
+      .addCase(fetchAdminAnalytics.fulfilled, (state, action) => {
+        state.loading = false;
+        state.analytics = action.payload;
+      })
       .addCase(deleteAdminPurchase.fulfilled, (state, action) => {
         state.loading = false;
         state.adminPurchases = state.adminPurchases.filter(
           (item) => item._id !== action.payload
         );
       })
-
-      // ✅ Delete Success: Customer
       .addCase(deleteCustomerPurchase.fulfilled, (state, action) => {
         state.loading = false;
         state.customerPurchases = state.customerPurchases.filter(
@@ -122,7 +130,14 @@ const purchaseSlice = createSlice({
         );
       })
 
-      // Global Rejected Matcher
+      // 2. ALL .addMatcher MUST GO AFTER .addCase
+      .addMatcher(
+        (action) => action.type.endsWith("/pending"),
+        (state) => {
+          state.loading = true;
+          state.error = null;
+        }
+      )
       .addMatcher(
         (action) => action.type.endsWith("/rejected"),
         (state, action) => {

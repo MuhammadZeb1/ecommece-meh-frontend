@@ -11,48 +11,45 @@ import "react-toastify/dist/ReactToastify.css";
 import CategoryPage from "./pages/CategoryPage";
 import KidProduct from "./pages/KidProduct";
 import UserProductList from "./pages/UserProductList";
-import { User } from "lucide-react";
 import UserNavbar from "./components/UserNavbar";
 import AdminNavbar from "./components/AdminNavbar";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
+
+// ✅ Removed duplicate imports here
 import AdminPurchases from "./pages/AdminPurchases";
 import Purchases from "./pages/Purchases";
-
-//  const token = localStorage.getItem(token)
 
 function App() {
   return (
     <>
-      {/* Toasts */}
-      <ToastContainer position="top-left" autoClose={3000} />
+      {/* ✅ Keep only one ToastContainer to avoid overlapping UI */}
       <ToastContainer position="top-right" autoClose={3000} />
 
       <Navbar />
-      {/* <UserNavbar /> */}
 
-      {/* ✅ Sidebar Context */}
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/createProduct" element={<CreateProduct />} />
-          <Route path="/updateProduct/:id" element={<UpdateProducts />} />
-          <Route
-            path="/dashboard/category/:category"
-            element={<CategoryPage />}
-          />
-          
-
-          <Route path="/cart" element={<Cart />} />
-          {/* Add other routes as needed */}
-          <Route path="/kidProduct" element={<KidProduct />} />
-          <Route path="/user/products/:category" element={<UserProductList />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/admin/purchases" element={<AdminPurchases />} />
-          <Route path="/customer/purchases" element={<Purchases />} />
-        </Routes>
-      
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+        
+        {/* Product Management */}
+        <Route path="/createProduct" element={<CreateProduct />} />
+        <Route path="/updateProduct/:id" element={<UpdateProducts />} />
+        
+        {/* Categories & Lists */}
+        <Route path="/dashboard/category/:category" element={<CategoryPage />} />
+        <Route path="/kidProduct" element={<KidProduct />} />
+        <Route path="/user/products/:category" element={<UserProductList />} />
+        
+        {/* Cart & Checkout */}
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/checkout" element={<Checkout />} />
+        
+        {/* Purchase History */}
+        <Route path="/admin/purchases" element={<AdminPurchases />} />
+        <Route path="/customer/purchases" element={<Purchases />} />
+      </Routes>
     </>
   );
 }

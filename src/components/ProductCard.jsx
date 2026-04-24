@@ -48,11 +48,13 @@ const ProductCard = ({ product }) => {
               ${product.price}
             </span>
           </figure>
+          jdfh 
 
           {/* BODY */}
           <div className="card-body p-5 flex flex-col justify-between">
             <div>
               <h2 className="card-title text-xl font-bold line-clamp-1">{product.name}</h2>
+              sdkljisd
 
               {/* CATEGORY & SUBCATEGORY */}
               {product.category && (

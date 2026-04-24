@@ -65,15 +65,24 @@ const CreateProduct = () => {
               required
             />
 
-            <input
-              name="price"
-              placeholder="Price"
-              type="number"
-              className="input border border-black w-full"
-              required
-            />
+            <div className="flex gap-2">
+              {/* ✅ Base Price Added */}
+              <input
+                name="basePrice"
+                placeholder="Base Price (e.g. $10)"
+                type="text"
+                className="input border border-black w-1/2"
+              />
+              
+              <input
+                name="price"
+                placeholder="Sale Price"
+                type="number"
+                className="input border border-black w-1/2"
+                required
+              />
+            </div>
 
-            {/* ✅ Quantity Added */}
             <input
               name="quantity"
               placeholder="Quantity"
@@ -126,7 +135,6 @@ const CreateProduct = () => {
 
           <div className="divider text-gray-400">OR</div>
 
-          {/* Hidden Bulk Input */}
           <input
             type="file"
             ref={bulkInputRef}
@@ -146,7 +154,7 @@ const CreateProduct = () => {
           </motion.button>
 
           <p className="text-[10px] text-center mt-2 opacity-60">
-            Upload a spreadsheet to add multiple products at once.
+            Ensure your spreadsheet includes a "basePrice" column.
           </p>
         </div>
       </motion.div>

@@ -1,6 +1,13 @@
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { FaHome, FaUser, FaSignInAlt, FaSignOutAlt, FaShoppingCart } from "react-icons/fa";
+import { 
+  FaHome, 
+  FaUser, 
+  FaSignInAlt, 
+  FaSignOutAlt, 
+  FaShoppingCart, 
+  FaShoppingBag // New icon for Purchases
+} from "react-icons/fa";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -14,10 +21,8 @@ import { logout } from "../redux/auth/authSlice";
 export default function UserNavbar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { token, role } = useSelector((state) => state.auth);
-
-
-  const cartItems = useSelector((state) => state.cart.items); // get cart items
+  const { token } = useSelector((state) => state.auth);
+  const cartItems = useSelector((state) => state.cart.items);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -36,16 +41,13 @@ export default function UserNavbar() {
       {/* Navigation Menu */}
       <NavigationMenu>
         <NavigationMenuList className="gap-2 flex items-center">
-          {/* Home always visible */}
+          
+          {/* Home */}
           <NavigationMenuItem>
             <NavLink
               to="/"
               className={({ isActive }) =>
-                cn(
-                  navigationMenuTriggerStyle(),
-                  "flex gap-2 items-center",
-                  isActive && "bg-accent text-accent-foreground font-bold"
-                )
+                cn(navigationMenuTriggerStyle(), "flex gap-2 items-center", isActive && "bg-accent font-bold")
               }
             >
               <FaHome /> Home
@@ -57,16 +59,12 @@ export default function UserNavbar() {
             <NavLink
               to="/cart"
               className={({ isActive }) =>
-                cn(
-                  navigationMenuTriggerStyle(),
-                  "flex gap-2 items-center",
-                  isActive && "bg-accent text-accent-foreground font-bold"
-                )
+                cn(navigationMenuTriggerStyle(), "flex gap-2 items-center", isActive && "bg-accent font-bold")
               }
             >
               <FaShoppingCart /> Cart
               {cartItems.length > 0 && (
-                <span className="ml-1 px-2 py-0.5 bg-red-600 text-white text-xs rounded-full">
+                <span className="ml-1 px-2 py-0.5 bg-red-600 text-white text-[10px] font-bold rounded-full">
                   {cartItems.length}
                 </span>
               )}
@@ -75,17 +73,29 @@ export default function UserNavbar() {
 
           {token ? (
             <>
+              {/* --- NEW: MY ORDERS / PURCHASES --- */}
+              <NavigationMenuItem>
+                <NavLink
+                  to="/customer/purchases"
+                  className={({ isActive }) =>
+                    cn(
+                      navigationMenuTriggerStyle(), 
+                      "flex gap-2 items-center", 
+                      isActive && "bg-blue-50 text-blue-600 font-bold"
+                    )
+                  }
+                >
+                  <FaShoppingBag /> My Orders
+                </NavLink>
+              </NavigationMenuItem>
+
               {/* Direct categories */}
               {categories.map((cat) => (
                 <NavigationMenuItem key={cat}>
                   <NavLink
                     to={`/user/products/${cat.toLowerCase()}`}
                     className={({ isActive }) =>
-                      cn(
-                        navigationMenuTriggerStyle(),
-                        "flex gap-2 items-center",
-                        isActive && "bg-accent text-accent-foreground font-bold"
-                      )
+                      cn(navigationMenuTriggerStyle(), isActive && "bg-accent font-bold")
                     }
                   >
                     {cat}
@@ -93,7 +103,7 @@ export default function UserNavbar() {
                 </NavigationMenuItem>
               ))}
 
-              {/* Logout button */}
+              {/* Logout */}
               <NavigationMenuItem>
                 <button
                   onClick={handleLogout}
@@ -108,16 +118,11 @@ export default function UserNavbar() {
             </>
           ) : (
             <>
-              {/* Login + Signup */}
               <NavigationMenuItem>
                 <NavLink
                   to="/signup"
                   className={({ isActive }) =>
-                    cn(
-                      navigationMenuTriggerStyle(),
-                      "flex gap-2 items-center",
-                      isActive && "bg-accent text-accent-foreground font-bold"
-                    )
+                    cn(navigationMenuTriggerStyle(), isActive && "bg-accent font-bold")
                   }
                 >
                   <FaUser /> Signup
@@ -128,11 +133,7 @@ export default function UserNavbar() {
                 <NavLink
                   to="/login"
                   className={({ isActive }) =>
-                    cn(
-                      navigationMenuTriggerStyle(),
-                      "flex gap-2 items-center",
-                      isActive && "bg-accent text-accent-foreground font-bold"
-                    )
+                    cn(navigationMenuTriggerStyle(), isActive && "bg-accent font-bold")
                   }
                 >
                   <FaSignInAlt /> Login

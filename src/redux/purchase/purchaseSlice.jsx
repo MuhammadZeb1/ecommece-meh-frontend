@@ -3,11 +3,11 @@ import api from "../../services/api";
 
 // ------------------- ASYNC THUNKS -------------------
 
-// 1. Create a purchase (Checkout)
 export const createPurchase = createAsyncThunk(
   "purchase/create",
   async (items, { rejectWithValue }) => {
     try {
+      // items should be [{ productId, quantity }, ...]
       const response = await api.post("/purchases/customer", { items });
       return response.data;
     } catch (err) {
@@ -16,7 +16,6 @@ export const createPurchase = createAsyncThunk(
   }
 );
 
-// 2. Fetch Customer History
 export const fetchCustomerPurchases = createAsyncThunk(
   "purchase/fetchCustomer",
   async (_, { rejectWithValue }) => {
@@ -29,7 +28,6 @@ export const fetchCustomerPurchases = createAsyncThunk(
   }
 );
 
-// 3. Fetch Admin History (All Records)
 export const fetchAdminPurchases = createAsyncThunk(
   "purchase/fetchAdmin",
   async (_, { rejectWithValue }) => {
@@ -42,12 +40,10 @@ export const fetchAdminPurchases = createAsyncThunk(
   }
 );
 
-// 4. ✅ NEW: Fetch Admin Analytics (Daily, Weekly, Monthly)
 export const fetchAdminAnalytics = createAsyncThunk(
   "purchase/fetchAnalytics",
   async (period, { rejectWithValue }) => {
     try {
-      // period can be 'daily', 'weekly', or 'monthly'
       const response = await api.get(`/purchases/admin/analytics?period=${period}`);
       return response.data;
     } catch (err) {
@@ -56,7 +52,6 @@ export const fetchAdminAnalytics = createAsyncThunk(
   }
 );
 
-// 5. Delete Purchase by Admin
 export const deleteAdminPurchase = createAsyncThunk(
   "purchase/deleteAdmin",
   async (purchaseId, { rejectWithValue }) => {
@@ -69,7 +64,6 @@ export const deleteAdminPurchase = createAsyncThunk(
   }
 );
 
-// 6. Delete Purchase by Customer
 export const deleteCustomerPurchase = createAsyncThunk(
   "purchase/deleteCustomer",
   async (purchaseId, { rejectWithValue }) => {
@@ -90,21 +84,29 @@ const purchaseSlice = createSlice({
     customerPurchases: [],
     adminPurchases: [],
     analytics: {
-      summary: { totalSales: 0, totalProfit: 0, totalLoss: 0 },
+      summary: { totalSales: 0, totalProfit: 0, totalLoss: 0, status: "Neutral" },
       bestSellingProducts: [],
       totalTransactions: 0,
     },
     loading: false,
+    success: false, // Added to track successful checkout
     error: null,
   },
   reducers: {
-    clearPurchaseError: (state) => {
+    resetPurchaseStatus: (state) => {
       state.error = null;
+      state.success = false;
     },
   },
   extraReducers: (builder) => {
     builder
-      // 1. ALL .addCase MUST GO FIRST
+      // Handle Purchase Success
+      .addCase(createPurchase.fulfilled, (state) => {
+        state.loading = false;
+        state.success = true;
+        state.error = null;
+      })
+      // Fetching Logic
       .addCase(fetchCustomerPurchases.fulfilled, (state, action) => {
         state.loading = false;
         state.customerPurchases = action.payload;
@@ -117,6 +119,7 @@ const purchaseSlice = createSlice({
         state.loading = false;
         state.analytics = action.payload;
       })
+      // Deletion Logic
       .addCase(deleteAdminPurchase.fulfilled, (state, action) => {
         state.loading = false;
         state.adminPurchases = state.adminPurchases.filter(
@@ -130,12 +133,13 @@ const purchaseSlice = createSlice({
         );
       })
 
-      // 2. ALL .addMatcher MUST GO AFTER .addCase
+      // Matchers for global Pending/Rejected states
       .addMatcher(
         (action) => action.type.endsWith("/pending"),
         (state) => {
           state.loading = true;
           state.error = null;
+          state.success = false;
         }
       )
       .addMatcher(
@@ -143,10 +147,11 @@ const purchaseSlice = createSlice({
         (state, action) => {
           state.loading = false;
           state.error = action.payload;
+          state.success = false;
         }
       );
   },
 });
 
-export const { clearPurchaseError } = purchaseSlice.actions;
+export const { resetPurchaseStatus } = purchaseSlice.actions;
 export default purchaseSlice.reducer;

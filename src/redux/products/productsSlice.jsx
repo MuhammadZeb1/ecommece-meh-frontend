@@ -55,6 +55,8 @@ export const updateProduct = createAsyncThunk(
   }
 );
 
+// ... (imports remain same)
+
 const productsSlice = createSlice({
   name: "products",
   initialState: {
@@ -65,7 +67,6 @@ const productsSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // READ
       .addCase(fetchProducts.pending, (state) => {
         state.loading = true;
       })
@@ -73,36 +74,28 @@ const productsSlice = createSlice({
         state.loading = false;
         state.items = action.payload;
       })
-
-      // CREATE
-      // NEW UPDATED CODE
       .addCase(addProduct.fulfilled, (state, action) => {
         state.loading = false;
-        // If bulk upload, add the array of products; otherwise, add the single product
+        // Check if the payload is from the Pharmacy Controller update
         if (action.payload.createdProducts) {
           state.items = [...action.payload.createdProducts, ...state.items];
         } else if (action.payload.product) {
           state.items.unshift(action.payload.product);
         }
       })
-
-      // DELETE
       .addCase(deleteProduct.fulfilled, (state, action) => {
         state.items = state.items.filter((p) => p._id !== action.payload);
       })
-
-      // UPDATE
-      // Current Update logic
       .addCase(updateProduct.fulfilled, (state, action) => {
         const index = state.items.findIndex(
           (p) => p._id === action.payload.product._id
         );
-        // Add this 'if' check to prevent errors if the index is -1
         if (index !== -1) {
           state.items[index] = action.payload.product;
         }
       });
   },
 });
+
 
 export default productsSlice.reducer;

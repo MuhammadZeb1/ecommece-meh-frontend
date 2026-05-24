@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const api = axios.create({
-  // baseURL: "http://localhost:3000/api",
-  baseURL: "https://ecommece-meh-backend.vercel.app/",
+  baseURL: "http://localhost:3000/api",
+  // baseURL: "https://ecommece-meh-backend.vercel.app/",
 });
 
 // ✅ REQUEST INTERCEPTOR (Token attach)

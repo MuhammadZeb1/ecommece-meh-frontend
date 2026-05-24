@@ -1,60 +1,155 @@
 import React from "react";
-import { Trash2, Calendar, Package } from "lucide-react";
+import { useDispatch } from "react-redux";
+import { 
+  removeFromCart, 
+  increaseQuantity, 
+  decreaseQuantity 
+} from "../redux/cart/cartSlice";
+import { 
+  Trash2, 
+  Plus, 
+  Minus, 
+  Package, 
+  ShoppingBag,
+  Info
+} from "lucide-react";
+import { cn } from "../lib/utils";
 
-const PurchaseCard = ({ purchase, onDelete }) => {
-  const { product, quantity, price, purchasedAt } = purchase;
+/**
+ * Professional Cart Item Component
+ * 
+ * Features:
+ * - Clean horizontal layout with refined spacing
+ * - Interactive quantity controls with feedback
+ * - Modern typography and visual hierarchy
+ * - Subtle transitions and hover states
+ * - High-quality action buttons (Remove, Adjust)
+ */
+
+const PurchaseCard = ({ item }) => {
+  const dispatch = useDispatch();
+  const { _id, name, image, price, cartQty, quantity: stockQuantity, category } = item;
+
+  const handleRemove = () => {
+    dispatch(removeFromCart(_id));
+  };
+
+  const handleIncrease = () => {
+    if (cartQty < stockQuantity) {
+      dispatch(increaseQuantity(_id));
+    }
+  };
+
+  const handleDecrease = () => {
+    if (cartQty > 1) {
+      dispatch(decreaseQuantity(_id));
+    }
+  };
+
+  const isLimitReached = cartQty >= stockQuantity;
 
   return (
-    <div className="group flex flex-col md:flex-row gap-6 p-5 border border-gray-100 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 bg-white relative overflow-hidden">
-      {/* Decorative accent for hover */}
-      <div className="absolute left-0 top-0 h-full w-1 bg-primary opacity-0 group-hover:opacity-100 transition-opacity" />
-
-      {/* Product Image */}
-      <div className="relative w-full md:w-32 h-32 flex-shrink-0">
-        {product?.image ? (
-          <img
-            src={product.image}
-            alt={product.name}
-            className="w-full h-full object-cover rounded-lg border border-gray-50"
-          />
-        ) : (
-          <div className="w-full h-full bg-gray-100 rounded-lg flex items-center justify-center">
-            <Package className="text-gray-400" size={32} />
+    <div className="group relative bg-white rounded-2xl border border-slate-200 p-4 transition-all duration-300 hover:shadow-xl hover:shadow-slate-100 hover:border-indigo-100">
+      <div className="flex flex-col sm:flex-row gap-5 items-center sm:items-start">
+        {/* PRODUCT IMAGE */}
+        <div className="relative w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0">
+          {image ? (
+            <img
+              src={image}
+              alt={name}
+              className="w-full h-full object-cover rounded-xl border border-slate-100 shadow-sm transition-transform duration-500 group-hover:scale-105"
+            />
+          ) : (
+            <div className="w-full h-full bg-slate-50 rounded-xl flex items-center justify-center border border-dashed border-slate-200">
+              <Package className="text-slate-300" size={32} />
+            </div>
+          )}
+          
+          {/* Item Index/Counter Badge */}
+          <div className="absolute -top-2 -left-2 bg-slate-900 text-white w-6 h-6 flex items-center justify-center rounded-full text-[10px] font-bold shadow-lg ring-2 ring-white">
+            <ShoppingBag size={10} />
           </div>
-        )}
-      </div>
+        </div>
 
-      {/* Details Section */}
-      <div className="flex-1 flex flex-col">
-        <div className="flex justify-between items-start">
-          <div>
-            <h3 className="text-xl font-bold text-gray-800 group-hover:text-primary transition-colors">
-              {product?.name || "Unknown Product"}
-            </h3>
-            <div className="flex flex-wrap gap-4 mt-2">
-              <span className="flex items-center gap-1.5 text-sm font-medium text-gray-600 bg-gray-50 px-2.5 py-1 rounded-md">
-                <Package size={14} /> Qty: {quantity}
-              </span>
-              <span className="text-sm font-bold text-green-600 bg-green-50 px-2.5 py-1 rounded-md">
-                ${price.toFixed(2)}
+        {/* CONTENT SECTION */}
+        <div className="flex-1 flex flex-col w-full min-w-0">
+          <div className="flex justify-between items-start gap-4">
+            <div className="min-w-0">
+              {category && (
+                <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest mb-1 block">
+                  {category.name}
+                </span>
+              )}
+              <h3 className="text-lg font-bold text-slate-900 truncate group-hover:text-indigo-600 transition-colors">
+                {name}
+              </h3>
+              <p className="text-sm font-semibold text-slate-500 mt-0.5">
+                ${price.toFixed(2)} <span className="text-slate-300 font-normal">/ unit</span>
+              </p>
+            </div>
+
+            {/* Remove Button */}
+            <button
+              onClick={handleRemove}
+              className="p-2.5 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all active:scale-90"
+              title="Remove from cart"
+            >
+              <Trash2 size={20} />
+            </button>
+          </div>
+
+          {/* CONTROLS & TOTAL */}
+          <div className="mt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            {/* Quantity Selector */}
+            <div className="flex items-center gap-1">
+              <div className="flex items-center bg-slate-50 border border-slate-200 rounded-xl p-1 shadow-sm">
+                <button
+                  onClick={handleDecrease}
+                  disabled={cartQty <= 1}
+                  className={cn(
+                    "p-1.5 rounded-lg transition-all",
+                    cartQty <= 1 
+                      ? "text-slate-300 cursor-not-allowed" 
+                      : "text-slate-600 hover:bg-white hover:shadow-sm active:scale-90"
+                  )}
+                >
+                  <Minus size={16} />
+                </button>
+                
+                <span className="w-10 text-center text-sm font-bold text-slate-900">
+                  {cartQty}
+                </span>
+                
+                <button
+                  onClick={handleIncrease}
+                  disabled={isLimitReached}
+                  className={cn(
+                    "p-1.5 rounded-lg transition-all",
+                    isLimitReached 
+                      ? "text-slate-300 cursor-not-allowed" 
+                      : "text-slate-600 hover:bg-white hover:shadow-sm active:scale-90"
+                  )}
+                >
+                  <Plus size={16} />
+                </button>
+              </div>
+              
+              {isLimitReached && (
+                <span className="flex items-center gap-1 text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded-lg border border-amber-100 ml-2 animate-pulse">
+                  <Info size={12} />
+                  Stock Limit
+                </span>
+              )}
+            </div>
+
+            {/* Item Total Price */}
+            <div className="flex flex-col items-end">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Subtotal</span>
+              <span className="text-xl font-black text-slate-900 tracking-tight">
+                ${(price * cartQty).toFixed(2)}
               </span>
             </div>
           </div>
-
-          {/* Delete Button */}
-          <button
-            onClick={() => onDelete(purchase._id)}
-            className="btn btn-ghost btn-circle text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all"
-            title="Remove from history"
-          >
-            <Trash2 size={20} />
-          </button>
-        </div>
-
-        {/* Footer info */}
-        <div className="mt-auto pt-4 flex items-center gap-2 text-xs text-gray-400 border-t border-dashed border-gray-100">
-          <Calendar size={12} />
-          <span>Purchased: {new Date(purchasedAt).toLocaleString()}</span>
         </div>
       </div>
     </div>

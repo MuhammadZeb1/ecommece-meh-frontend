@@ -29,6 +29,7 @@ const AppSidebar = ({ products = [], onFilterChange }) => {
   const [filters, setFilters] = useState({
     search: "",
     subCategory: "all",
+    alertType: "all",
     priceRange: [0, 1000], // temporary, will set after products load
   });
 
@@ -46,11 +47,27 @@ const AppSidebar = ({ products = [], onFilterChange }) => {
     ...new Set(products.map((p) => p.category?.subCategory).filter(Boolean)),
   ];
 
+  const getAlertType = (product) => {
+    const now = new Date();
+    const expiresAt = product.expiryDate ? new Date(product.expiryDate) : null;
+    const quantity = typeof product.quantity === "number" ? product.quantity : 0;
+
+    if (quantity <= 0) return "out-of-stock";
+    if (expiresAt) {
+      const diffDays = Math.ceil((expiresAt - now) / (1000 * 60 * 60 * 24));
+      if (diffDays < 0) return "expired";
+      if (diffDays <= 7) return "expiring-soon";
+    }
+    if (quantity > 0 && quantity < 10) return "low-stock";
+    return "healthy";
+  };
+
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
       const name = product.name?.toLowerCase() || "";
       const subCat = product.category?.subCategory?.toLowerCase() || "";
       const price = typeof product.price === "number" ? product.price : 0;
+      const alertType = getAlertType(product);
 
       const matchName = filters.search
         ? name.includes(filters.search.toLowerCase())
@@ -59,11 +76,15 @@ const AppSidebar = ({ products = [], onFilterChange }) => {
         !filters.subCategory || filters.subCategory === "all"
           ? true
           : subCat === filters.subCategory.toLowerCase();
+      const matchAlert =
+        filters.alertType === "all" ? true :
+        filters.alertType === "healthy" ? alertType === "healthy" :
+        alertType === filters.alertType;
       const matchPrice =
         price >= (filters.priceRange?.[0] ?? 0) &&
         price <= (filters.priceRange?.[1] ?? maxPriceFromProducts);
 
-      return matchName && matchSubCategory && matchPrice;
+      return matchName && matchSubCategory && matchAlert && matchPrice;
     });
   }, [products, filters, maxPriceFromProducts]);
 
@@ -117,6 +138,31 @@ const AppSidebar = ({ products = [], onFilterChange }) => {
           </SidebarGroupContent>
         </SidebarGroup>
 
+        {/* Alert Status */}
+        <SidebarGroup>
+          <SidebarGroupLabel>Alert Status</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <Select
+              value={filters.alertType}
+              onValueChange={(val) =>
+                setFilters({ ...filters, alertType: val })
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Any status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Statuses</SelectItem>
+                <SelectItem value="expiring-soon">Expiring Soon</SelectItem>
+                <SelectItem value="expired">Expired</SelectItem>
+                <SelectItem value="low-stock">Low Stock</SelectItem>
+                <SelectItem value="out-of-stock">Out of Stock</SelectItem>
+                <SelectItem value="healthy">Healthy Stock</SelectItem>
+              </SelectContent>
+            </Select>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
         {/* Price Range */}
         <SidebarGroup>
           <SidebarGroupLabel>
@@ -142,6 +188,7 @@ const AppSidebar = ({ products = [], onFilterChange }) => {
             setFilters({
               search: "",
               subCategory: "all",
+              alertType: "all",
               priceRange: [0, maxPriceFromProducts],
             })
           }
